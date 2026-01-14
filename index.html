@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html lang="lt">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Rivals 2026 - Legacy Tournament</title>
+
+    <link href="fonts.googleapis.com" rel="stylesheet">
+
+    <style>
+
+        :root { --primary-color: #00d2ff; --bg-body: linear-gradient(135deg, #0f0c29, #302b63, #24243e); }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body { height: 100vh; display: flex; justify-content: center; align-items: center; background: var(--bg-body); color: white; overflow: hidden; transition: 0.8s; }
+
+        .money-display { position: absolute; bottom: 20px; right: 20px; background: rgba(0,0,0,0.9); padding: 12px 25px; border-radius: 50px; border: 2px solid #ffd700; font-weight: 600; color: #ffd700; font-size: 20px; z-index: 100; display: none; }
+
+        .top-menu { position: absolute; top: 20px; left: 20px; display: none; gap: 10px; z-index: 10; flex-wrap: wrap; max-width: 95%; }
+
+        .menu-btn { padding: 10px 18px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; color: white; cursor: pointer; transition: 0.3s; font-weight: 600; font-size: 13px; }
+
+        .menu-btn:hover { background: var(--primary-color); border-color: white; }
+
+        .container { width: 450px; background: rgba(255, 255, 255, 0.1); padding: 35px; border-radius: 25px; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); text-align: center; }
+
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; background: #111; padding: 25px; border-radius: 25px; border: 2px solid var(--primary-color); z-index: 1000; max-height: 85vh; overflow-y: auto; box-shadow: 0 0 30px rgba(0, 210, 255, 0.3); }
+
+        .section-title { margin: 20px 0 10px; font-size: 18px; border-bottom: 1px solid #333; padding-bottom: 5px; text-align: left; color: var(--primary-color); }
+
+        .item-row { background: rgba(255,255,255,0.07); padding: 12px; margin: 8px 0; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; }
+
+        input { width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 10px; border: none; background: rgba(255,255,255,0.1); color: white; outline: none; }
+
+        .submit-btn { width: 100%; padding: 14px; border-radius: 12px; font-weight: bold; cursor: pointer; background: var(--primary-color); border: none; color: white; transition: 0.3s; margin-top: 10px; }
+
+        .close-link { margin-top: 20px; color: #ff4d4d; cursor: pointer; display: block; font-weight: 600; text-align: center; }
+
+        .inv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+
+        .inv-item { padding: 15px; border-radius: 12px; cursor: pointer; border: 2px solid transparent; font-size: 11px; font-weight: 600; text-shadow: 1px 1px 2px black; text-align: center; }
+
+        .profile-box { background: #222; padding: 15px; border-radius: 15px; text-align: left; border-left: 4px solid var(--primary-color); margin-bottom: 10px; }
+
+    </style>
+
+</head>
+
+<body>
+
+ 
+
+    <div class="money-display" id="moneyUI">💰 <span id="balance">0</span></div>
+
+ 
+
+    <div class="top-menu" id="topMenu">
+
+        <button class="menu-btn" onclick="openModal('profile-modal')">👤 Profilis</button>
+
+        <button class="menu-btn" onclick="openModal('shop-modal')">🛒 Shop</button>
+
+        <button class="menu-btn" onclick="openModal('tourney-modal')" style="background: #e67e22;">🏆 Mini-Tourney</button>
+
+        <button class="menu-btn" onclick="openModal('leader-modal')">📊 Leaderboard</button>
+
+        <button class="menu-btn" onclick="openModal('inv-modal')">🎒 Inventorius</button>
+
+        <button class="menu-btn" onclick="openModal('code-modal')">🔑 Kodai</button>
+
+        <button class="menu-btn" onclick="location.reload()" style="color: #ff4d4d;">Atsijungti</button>
+
+    </div>
+
+ 
+
+    <div class="container" id="mainContainer">
+
+        <div id="authSection">
+
+            <h2 style="margin-bottom:15px;">Rivals 2026</h2>
+
+            <input type="text" id="username" placeholder="Vartotojo vardas">
+
+            <input type="password" id="password" placeholder="Slaptažodis">
+
+            <button class="submit-btn" onclick="processAuth()">PRISIJUNGTI</button>
+
+        </div>
+
+    </div>
+
+ 
+
+    <div id="shop-modal" class="modal">
+
+        <h2>🛒 Parduotuvė</h2>
+
+        <div class="section-title">📦 Dėžės (Be dublikatų)</div>
+
+        <div class="item-row"><div><strong>4Vita Crate</strong><br><small>Sniper, Assault, Burst</small></div><button class="menu-btn" onclick="buyCrate('4vita', 50000)">50,000 💰</button></div>
+
+        <div class="item-row"><div><strong>Gradient Crate</strong><br><small>Senos dvigubos</small></div><button class="menu-btn" onclick="buyCrate('double', 5000)">5,000 💰</button></div>
+
+        <div class="item-row"><div><strong>Trispalvė Fire Crate</strong><br><small>Senos tribugbos</small></div><button class="menu-btn" onclick="buyCrate('triple', 25000)">25,000 💰</button></div>
+
+        <div class="section-title">🌊 Nemokama</div><div id="free-item-list"></div>
+
+        <div class="section-title">🎨 Klasikiniai Fonai</div><div id="shop-items-list"></div>
+
+        <span class="close-link" onclick="closeModal('shop-modal')">UŽDARYTI</span>
+
+    </div>
+
+ 
+
+    <div id="profile-modal" class="modal"><h2>👤 Profilis</h2><div class="profile-box"><p>User: <span id="p-user"></span></p><p>Pass: <span id="p-pass"></span></p></div><span class="close-link" onclick="closeModal('profile-modal')">UŽDARYTI</span></div>
+
+    <div id="tourney-modal" class="modal"><h2>🏆 Turnyras</h2><p style="font-size:11px; margin-bottom:10px; color:#aaa;">Kitas Mini-Tourney už 2 savaičių!</p><button class="submit-btn" onclick="registerToTourney()">REGISTRUOTIS (12 MAX)</button><div id="playerNames" style="margin-top:10px;"></div><span class="close-link" onclick="closeModal('tourney-modal')">UŽDARYTI</span></div>
+
+    <div id="leader-modal" class="modal"><h2>📊 Leaderboard</h2><div id="leader-list"></div><span class="close-link" onclick="closeModal('leader-modal')">UŽDARYTI</span></div>
+
+    <div id="inv-modal" class="modal"><h2>🎒 Inventorius</h2><div class="inv-grid" id="inventory-list"></div><span class="close-link" onclick="closeModal('inv-modal')">UŽDARYTI</span></div>
+
+    <div id="code-modal" class="modal"><h3>🔑 Kodai</h3><input type="text" id="promoInput" placeholder="Kodas"><button class="submit-btn" onclick="applyCode()">AKTYVUOTI</button><span class="close-link" onclick="closeModal('code-modal')">UŽDARYTI</span></div>
+
+ 
+
+<script>
+
+    let currentUser = null;
+
+    let users = JSON.parse(localStorage.getItem('RIVALS_2026_ULTIMATE_V6')) || {};
+
+    let tourney = JSON.parse(localStorage.getItem('RIVALS_TOURNEY_2026_V6')) || [];
+
+ 
+
+    const themes = {
+
+        // NEMOKAMI
+
+        'ugnis': { name: '🔴 Ugnis', grad: 'linear-gradient(135deg, #8b0000, #ff4500)', price: 0, type: 'free' },
+
+        'vandenynas': { name: '🌊 Vandenynas', grad: 'linear-gradient(135deg, #0077be, #00a8e8)', price: 0, type: 'free' },
+
+        'neon_secret': { name: '🌌 Neon Secret', grad: 'linear-gradient(135deg, #0f0c29, #302b63, #24243e, #6a11cb, #2575fc)', price: 999999, type: 'secret' },
+
+       
+
+        // KLASIKINIAI SHOP
+
+        'sakura': { name: '🌸 Sakura', grad: 'linear-gradient(135deg, #ff9a9e, #fecfef)', price: 2000, type: 'shop' },
+
+        'ledas': { name: '❄️ Ledas', grad: 'linear-gradient(135deg, #e0ffff, #00ced1)', price: 2000, type: 'shop' },
+
+        'kosmosas': { name: '🔘 Kosmosas', grad: 'linear-gradient(135deg, #000, #434343)', price: 2500, type: 'shop' },
+
+        'magija': { name: '🟣 Magija', grad: 'linear-gradient(135deg, #240b36, #c31432)', price: 2000, type: 'shop' },
+
+        'aurora': { name: '🌌 Aurora', grad: 'linear-gradient(135deg, #000, #004d2c)', price: 3500, type: 'shop' },
+
+        'miskas': { name: '🟢 Miškas', grad: 'linear-gradient(135deg, #0a2e0a, #2ecc71)', price: 1500, type: 'shop' },
+
+        'mandarinai': { name: '🍊 Mandarinai', grad: 'linear-gradient(135deg, #ff8c00, #ff4500)', price: 2000, type: 'shop' },
+
+        'auksas': { name: '🟡 Auksas', grad: 'linear-gradient(135deg, #bf953f, #fcf6ba, #b38728)', price: 10000, type: 'shop' },
+
+ 
+
+        // 4VITA CRATE
+
+        'sniper': { name: '🎯 Rivals Sniper', grad: 'radial-gradient(circle, #444 0%, #000 100%)', type: '4vita' },
+
+        'rifle': { name: '🔫 Assault Rifle', grad: 'linear-gradient(45deg, #1a472a, #000)', type: '4vita' },
+
+        'burst': { name: '💥 Burst Rifle', grad: 'linear-gradient(135deg, #c5a059, #8b4513, #000)', type: '4vita' },
+
+ 
+
+        // DVIGUBI (GRADIENT CRATE) - VISI SENI
+
+        'rm': { name: '🔴🔵 Raudona-Mėlyna', grad: 'linear-gradient(135deg, #ff0000, #0000ff)', type: 'double' },
+
+        'gz': { name: '🟢🟡 Žalia-Geltona', grad: 'linear-gradient(135deg, #00ff00, #ffff00)', type: 'double' },
+
+        'rb': { name: '🔴⚪ Raudona-Balta', grad: 'linear-gradient(135deg, #ff0000, #ffffff)', type: 'double' },
+
+        'rj': { name: '🔴⚫ Raudona-Juoda', grad: 'linear-gradient(135deg, #ff0000, #000000)', type: 'double' },
+
+        'ov': { name: '🟠🟣 Oranžinė-Violetinė', grad: 'linear-gradient(135deg, #ff8c00, #8a2be2)', type: 'double' },
+
+        'mj': { name: '🔵⚫ Mėlyna-Juoda', grad: 'linear-gradient(135deg, #0000ff, #000000)', type: 'double' },
+
+ 
+
+        // TRIGUBI (TRISPALVĖ FIRE CRATE) - VISI SENI UGNIES STILIUMI
+
+        'lt_f': { name: '🇱🇹 Lietuva Fire', grad: 'linear-gradient(135deg, #fdb913, #006a44, #c1272d)', type: 'triple' },
+
+        'est_f': { name: '🇪🇪 Estija Fire', grad: 'linear-gradient(135deg, #0072ce, #000000, #ffffff)', type: 'triple' },
+
+        'lat_f': { name: '🇱🇻 Latvija Fire', grad: 'linear-gradient(135deg, #9e3039, #ffffff, #9e3039)', type: 'triple' },
+
+        'ger_f': { name: '🇩🇪 Vokietija Fire', grad: 'linear-gradient(135deg, #000000, #ff0000, #ffce00)', type: 'triple' },
+
+        'fra_f': { name: '🇫🇷 Prancūzija Fire', grad: 'linear-gradient(135deg, #002395, #ffffff, #ed2939)', type: 'triple' },
+
+        'ita_f': { name: '🇮🇹 Italija Fire', grad: 'linear-gradient(135deg, #009246, #ffffff, #ce2b37)', type: 'triple' },
+
+        'esp_f': { name: '🇪🇸 Ispanija Fire', grad: 'linear-gradient(135deg, #aa151b, #f1bf00, #aa151b)', type: 'triple' }
+
+    };
+
+ 
+
+    function processAuth() {
+
+        const user = document.getElementById('username').value.trim();
+
+        const pass = document.getElementById('password').value.trim();
+
+        if(!user || !pass) return;
+
+        if(!users[user]) users[user] = { password: pass, balance: 10000, inv: ['ugnis', 'vandenynas'], current: 'vandenynas' };
+
+        else if(users[user].password !== pass) return alert("Blogas slaptažodis");
+
+        currentUser = user;
+
+        document.getElementById('authSection').style.display='none';
+
+        document.getElementById('topMenu').style.display='flex';
+
+        document.getElementById('moneyUI').style.display='block';
+
+        save(); updateUI(); applyTheme(users[user].current);
+
+    }
+
+ 
+
+    function updateUI() {
+
+        const u = users[currentUser];
+
+        document.getElementById('balance').innerText = u.balance.toLocaleString();
+
+        document.getElementById('p-user').innerText = currentUser;
+
+        document.getElementById('p-pass').innerText = u.password;
+
+       
+
+        const freeDiv = document.getElementById('free-item-list');
+
+        const shopDiv = document.getElementById('shop-items-list');
+
+        freeDiv.innerHTML = ''; shopDiv.innerHTML = '';
+
+        Object.keys(themes).forEach(id => {
+
+            if(!u.inv.includes(id) && themes[id].type !== 'secret') {
+
+                if(themes[id].type === 'free') freeDiv.innerHTML += `<div class="item-row"><span>${themes[id].name}</span><button class="menu-btn" onclick="buyTheme('${id}')">GAUTI</button></div>`;
+
+                if(themes[id].type === 'shop') shopDiv.innerHTML += `<div class="item-row"><span>${themes[id].name}</span><button class="menu-btn" onclick="buyTheme('${id}')">${themes[id].price.toLocaleString()} 💰</button></div>`;
+
+            }
+
+        });
+
+        document.getElementById('inventory-list').innerHTML = u.inv.map(id => `<div class="inv-item" style="background:${themes[id].grad}" onclick="applyTheme('${id}')">${themes[id].name}</div>`).join('');
+
+        const sorted = Object.keys(users).sort((a,b) => users[b].balance - users[a].balance);
+
+        document.getElementById('leader-list').innerHTML = sorted.map((n, i) => `<div class="item-row"><span>#${i+1} ${n}</span><strong>${users[n].balance.toLocaleString()}</strong></div>`).join('');
+
+        document.getElementById('playerNames').innerText = "Dalyviai: " + (tourney.join(', ') || 'Nėra');
+
+    }
+
+ 
+
+    function buyTheme(id) { if(users[currentUser].balance >= (themes[id].price || 0)) { users[currentUser].balance -= (themes[id].price || 0); users[currentUser].inv.push(id); save(); updateUI(); } }
+
+   
+
+    function buyCrate(type, price) {
+
+        const u = users[currentUser];
+
+        if(u.balance < price) return alert("Trūksta pinigų!");
+
+        const pool = Object.keys(themes).filter(id => themes[id].type === type && !u.inv.includes(id));
+
+        if(pool.length === 0) return alert("Viską iš šios dėžės jau turi!");
+
+        u.balance -= price;
+
+        const win = pool[Math.floor(Math.random() * pool.length)];
+
+        u.inv.push(win);
+
+        alert("LAIMĖJAI: " + themes[win].name);
+
+        save(); updateUI();
+
+    }
+
+ 
+
+    function registerToTourney() { if(tourney.length < 12 && !tourney.includes(currentUser)) { tourney.push(currentUser); localStorage.setItem('RIVALS_TOURNEY_2026_V6', JSON.stringify(tourney)); updateUI(); } }
+
+ 
+
+    function applyCode() {
+
+        const val = document.getElementById('promoInput').value.trim().toUpperCase();
+
+        if(val === 'SECRET') {
+
+            if(!users[currentUser].inv.includes('neon_secret')) users[currentUser].inv.push('neon_secret');
+
+            users[currentUser].balance += 50000;
+
+            applyTheme('neon_secret');
+
+            alert("SECRET ATRAKINTAS! +50,000 💰");
+
+        } else if(val === 'RIVALS') users[currentUser].balance += 1000000;
+
+        else if(val === '2026') users[currentUser].balance += 5000;
+
+       
+
+        document.getElementById('promoInput').value = '';
+
+        save(); updateUI();
+
+    }
+
+ 
+
+    function applyTheme(id) { document.body.style.background = themes[id].grad; users[currentUser].current = id; save(); }
+
+    function openModal(id) { updateUI(); document.getElementById(id).style.display = 'block'; }
+
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    function save() { localStorage.setItem('RIVALS_2026_ULTIMATE_V6', JSON.stringify(users)); }
+
+</script>
+
+</body>
+
+</html>
